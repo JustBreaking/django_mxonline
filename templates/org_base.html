@@ -23,7 +23,7 @@
 		<div  class="header">
 			<div class="top">
 				<div class="wp">
-					<div class="fl"><p>服务电话：<b>33333333</b></p></div>
+					<a href="{% url 'index' %}">首页</a>
 					<!--登录后跳转-->
 					{% if request.user.is_authenticated %}
 						<div class="personal">

@@ -38,6 +38,9 @@ class CourseOrg(models.Model):
         verbose_name_plural = verbose_name
     def __str__(self):
         return self.name
+    #获取机构下面的讲师数量
+    def get_teacher_num(self):
+        return self.teacher_set.all().count()
 
 
 @python_2_unicode_compatible
