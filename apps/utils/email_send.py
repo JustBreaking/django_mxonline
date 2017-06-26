@@ -20,7 +20,10 @@ def random_str(randomlength=8):
 def send_email_verification_code(email, send_type="register"):
     email_record = EmailVerfyRecord()
     #生成一个16位数字的验证码
-    code = random_str(16)
+    if send_type == 'update':
+        code = random_str(6)
+    else:
+        code = random_str(16)
     email_record.code = code
     email_record.email = email
     email_record.send_type = send_type
@@ -37,6 +40,14 @@ def send_email_verification_code(email, send_type="register"):
     elif send_type == 'forget':
         email_title = "暮雪在线网密码重置链接"
         email_body = '请点击链接重置密码：http://127.0.0.1:8000/reset/{0}'.format(code)
+
+        send_status = send_mail(email_title, email_body, EMAIL_FROM, [email])
+        if send_status:
+            pass
+
+    elif send_type == 'update':
+        email_title = "暮雪在线网邮箱修改验证码"
+        email_body = '你的邮箱验证码为: {0}'.format(code)
 
         send_status = send_mail(email_title, email_body, EMAIL_FROM, [email])
         if send_status:

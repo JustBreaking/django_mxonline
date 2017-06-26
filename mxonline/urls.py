@@ -23,7 +23,7 @@ import xadmin
 
 # from users.views import log_in, log_out
 from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView, LogoutView
-import organization
+import organization, courses, users
 from mxonline.settings import MEDIA_ROOT
 
 
@@ -42,8 +42,12 @@ urlpatterns = [
     url(r'^logout/$', LogoutView.as_view(), name="logout"),
     # url(r'^logout/$', log_out, name="logout"),
 
-    #课程机构url配置
+    #课程机构，讲师等url配置
     url(r'^org/', include('organization.urls', namespace='org')),
+    #课程相关url配置
+    url(r'^course/', include('courses.urls', namespace='course')),
+    #用户相关url配置
+    url(r'^users/', include('users.urls', namespace='users')),
 
     #设置上传文件的访问处理函数
     url(r'^media/(?P<path>.*)$', serve, {"document_root":MEDIA_ROOT}),

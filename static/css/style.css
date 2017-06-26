@@ -9114,3 +9114,11 @@ table .upload-btn {
     height:auto;
     left:auto;
 }
+
+.message_hasread{
+    color: #000000;
+}
+
+.message_unread{
+    color: #EEB422;
+}

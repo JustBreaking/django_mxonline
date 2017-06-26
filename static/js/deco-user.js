@@ -62,7 +62,7 @@ var verify = verifyDialogSubmit(
             if(data.email){
                 Dml.fun.showValidateError($('#jsChangeEmail'), data.email);
             }else if(data.status == "success"){
-                Dml.fun.showErrorTips($('#jsChangePhoneTips'), "邮箱信息更新成功");
+                Dml.fun.showErrorTips($('#jsChangeEmailTips'), "邮箱信息更新成功");
                 setTimeout(function(){location.reload();},1000);
             }else{
                  Dml.fun.showValidateError($('#jsChangeEmail'), "邮箱信息更新失败");
@@ -90,7 +90,9 @@ $(function(){
             data:$('#jsResetPwdForm').serialize(),
             async: true,
             success: function(data) {
-                if(data.password1){
+                if(data.oldpassword){
+                    Dml.fun.showValidateError($("#oldpwd"), data.oldpassword);
+                }else if(data.password1){
                     Dml.fun.showValidateError($("#pwd"), data.password1);
                 }else if(data.password2){
                     Dml.fun.showValidateError($("#repwd"), data.password2);
@@ -101,6 +103,7 @@ $(function(){
                     });
                     Dml.fun.winReload();
                 }else if(data.msg){
+                    Dml.fun.showValidateError($("#oldpwd"), data.msg);
                     Dml.fun.showValidateError($("#pwd"), data.msg);
                     Dml.fun.showValidateError($("#repwd"), data.msg);
                 }
