@@ -24,13 +24,14 @@ import xadmin
 # from users.views import log_in, log_out
 from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView, LogoutView
 import organization, courses, users
-from mxonline.settings import MEDIA_ROOT
+from users.views import IndexView
+from mxonline.settings import MEDIA_ROOT, STATIC_ROOT
 
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
     url(r'^xadmin/', xadmin.site.urls),
-    url(r'^$', TemplateView.as_view(template_name="index.html"), name="index"),
+    url(r'^$', IndexView.as_view(), name="index"),
     # url(r'^login/$', log_in, name="login"),
     url(r'^login/$', LoginView.as_view(), name="login"), #基于类实现登陆
     url(r'^register/$', RegisterView.as_view(), name="register"), #基于类实现登陆
@@ -51,4 +52,10 @@ urlpatterns = [
 
     #设置上传文件的访问处理函数
     url(r'^media/(?P<path>.*)$', serve, {"document_root":MEDIA_ROOT}),
+
+    url(r'^static/(?P<path>.*)$', serve, {"document_root":STATIC_ROOT}),
 ]
+
+#全局404页面配置
+handler404 = 'users.views.page_not_found'
+handler500 = 'users.views.page_error'
