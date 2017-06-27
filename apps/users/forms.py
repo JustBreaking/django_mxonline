@@ -21,8 +21,14 @@ class ForgetForm(forms.Form):
     email = forms.EmailField()
     captcha = captcha = CaptchaField(error_messages={"invalid":u"验证码错误"})
 
+#个人中心重置密码
 class ModifyPwdForm(forms.Form):
     oldpassword = forms.CharField(required=True, min_length=6)
+    password1 = forms.CharField(required=True, min_length=6)
+    password2 = forms.CharField(required=True, min_length=6)
+
+#登陆页面的找回密码
+class ResetPwdForm(forms.Form):
     password1 = forms.CharField(required=True, min_length=6)
     password2 = forms.CharField(required=True, min_length=6)
 

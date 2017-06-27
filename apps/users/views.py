@@ -5,7 +5,7 @@ sys.setdefaultencoding('utf-8')
 
 import json
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
@@ -13,14 +13,15 @@ from django.views.generic.base import View
 from django.contrib.auth.hashers import make_password
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import update_session_auth_hash
+from django.core.urlresolvers import reverse
 
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import UserProfile, EmailVerfyRecord
+from .models import UserProfile, EmailVerfyRecord, Banner
 from operation.models import UserCourse, UserFavorite, UserMessage
 from organization.models import CourseOrg, Teacher
 from courses.models import Course
-from .forms import LoginForm, RegisterForm, ForgetForm, ModifyPwdForm, UploadImageForm, UserInfoForm
+from .forms import LoginForm, RegisterForm, ForgetForm, ModifyPwdForm, UploadImageForm, UserInfoForm, ResetPwdForm
 from utils.email_send import send_email_verification_code
 from utils.mixin_utils import LoginRequiredMixin
 
@@ -43,7 +44,9 @@ def log_in(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return render(request, "index.html", {})
+            # return render(request, "index.html", {})    #会导致登陆之后首页没有数据显示
+            return HttpResponseRedirect(reverse('index'))
+
         else:
             return render(request, "login.html", {'msg':'用户名或密码错误'})
     elif request.method == 'GET':
@@ -71,7 +74,8 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return render(request, "index.html")
+                    # return render(request, "index.html", {})    #会导致登陆之后首页没有数据显示
+                    return HttpResponseRedirect(reverse('index'))
                 else:
                     return render(request, "login.html", {'msg':'用户未激活'})
             else:
@@ -135,7 +139,8 @@ class RegisterView(View):
             user_message.save()
 
             send_email_verification_code(username, 'register')
-            return render(request, 'login.html')
+            # return render(request, 'login.html')
+            return HttpResponse('注册成功！请通过邮箱链接激活账户信息！')
         else:
             return render(request, 'register.html', {'register_form':register_form})
 
@@ -173,7 +178,7 @@ class ResetPwdView(View):
 #未登录状态忘记密码的修改密码
 class ModifyPwdView(View):
     def post(self, request):
-        modify_form = ModifyPwdForm(request.POST)
+        modify_form = ResetPwdForm(request.POST)
         if modify_form.is_valid():
             pwd1 = request.POST.get('password1','')
             pwd2 = request.POST.get('password2','')
@@ -333,3 +338,32 @@ class MessageDetailView(View):
         return render(request, 'usercenter-message-detail.html', {
             'message':message,
         })
+
+
+#暮雪在线网首页
+class IndexView(View):
+    def get(self, request):
+        # print 1/0 #500错误调试
+        all_banners = Banner.objects.all().order_by('index')
+        courses = Course.objects.filter(is_banner=False)[:6]
+        banner_courses = Course.objects.filter(is_banner=True)[:3]
+        course_orgs = CourseOrg.objects.all()[:15]
+
+        return render(request, 'index.html', {
+            'all_banners':all_banners,
+            'courses':courses,
+            'banner_courses':banner_courses,
+            'course_orgs':course_orgs,
+        })
+
+#全局404处理函数
+def page_not_found(request):
+    response = render_to_response('404.html',{})
+    response.status_code = 404
+    return response
+
+#全局500错误处理函数
+def page_error(request):
+    response = render_to_response('500.html',{})
+    response.status_code = 500
+    return response
