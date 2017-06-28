@@ -15,6 +15,8 @@ class CourseOrgAdmin(object):
     search_fields = ['name','desc','category','click_nums','fav_nums','image','address','city__name']
     list_filter = ['name','desc','category','click_nums','fav_nums','image','address','city__name','add_time']
 
+    style_fields = {'desc':'ueditor'}
+
 class TeacherAdmin(object):
     list_display = ['org','name','work_years','work_company','work_position','points','fav_nums','click_nums','add_time']
     search_fields = ['org__name','name','work_years','work_company','work_position','points','fav_nums','click_nums']

@@ -25,7 +25,7 @@ import xadmin
 from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView, LogoutView
 import organization, courses, users
 from users.views import IndexView
-from mxonline.settings import MEDIA_ROOT, STATIC_ROOT
+from mxonline.settings import MEDIA_ROOT
 
 
 urlpatterns = [
@@ -50,10 +50,13 @@ urlpatterns = [
     #用户相关url配置
     url(r'^users/', include('users.urls', namespace='users')),
 
+    #富文本相关
+    url(r'^ueditor/',include('DjangoUeditor.urls' )),
+
     #设置上传文件的访问处理函数
     url(r'^media/(?P<path>.*)$', serve, {"document_root":MEDIA_ROOT}),
 
-    url(r'^static/(?P<path>.*)$', serve, {"document_root":STATIC_ROOT}),
+    # url(r'^static/(?P<path>.*)$', serve, {"document_root":STATIC_ROOT}),
 ]
 
 #全局404页面配置

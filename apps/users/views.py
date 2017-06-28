@@ -106,7 +106,8 @@ class ActiveUserView(View):
                 user.save()
         else:
             return render(request, 'active_fail.html')
-        return render(request, 'login.html')
+        # return render(request, 'login.html')
+        return HttpResponseRedirect(reverse('login'))
 
 
 class RegisterView(View):

@@ -6,6 +6,8 @@ from django.db import models
 from future.utils import python_2_unicode_compatible
 from organization.models import CourseOrg, Teacher
 
+from DjangoUeditor.models import UEditorField
+
 
 @python_2_unicode_compatible
 class Course(models.Model):
@@ -13,7 +15,12 @@ class Course(models.Model):
     name = models.CharField(max_length=50, verbose_name=u'课程名' )
     desc = models.CharField(max_length=256, verbose_name=u'课程描述')
     teacher = models.ForeignKey(Teacher, max_length=50, verbose_name=u'讲师', null=True, blank=True )
-    detail = models.TextField(verbose_name=u'课程详情')
+    # detail = models.TextField(verbose_name=u'课程详情')
+    detail = UEditorField(verbose_name=u'课程详情',width=600, height=300, toolbars="full",
+            imagePath="courses/ueditor/",
+            filePath="courses/ueditor/",
+            default = ""
+        )
     is_banner = models.BooleanField(verbose_name=u'是否轮播',default=False)
     degree = models.CharField(verbose_name=u'难度', max_length=2, choices=(('cj',u'初级'),('zj',u'中级'),('gj',u'高级')))
     learn_time = models.IntegerField(default=0, verbose_name=u'学习时长（分钟数）')
@@ -34,9 +41,15 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
-    #获取课程的章节数
+    #获取课程的章节数,可以和字段一样被注册到admin中
     def get_lesson_num(self):
         return self.lesson_set.all().count()
+    get_lesson_num.short_description = u'章节数'
+    #显示自定义的html
+    def go_to(self):
+        from django.utils.safestring import mark_safe
+        return mark_safe("<a href='http://baidu.com'>go</a>")
+    go_to.short_description = "跳转"
 
     #获取学习该课程的用户
     def get_learn_users(self):
@@ -45,6 +58,14 @@ class Course(models.Model):
     #获取课程所有章节
     def get_course_lesson(self):
         return self.lesson_set.all()
+
+#用于后台展示时，轮播课程和普通课程分开，proxy参数置为false，并不会生成新的数据表
+class CourseBanner(Course):
+    class Meta:
+        verbose_name = u'轮播课程'
+        verbose_name_plural = verbose_name
+        #必须设置为true，否则生成两张表
+        proxy = True
 
 @python_2_unicode_compatible
 class Lesson(models.Model):

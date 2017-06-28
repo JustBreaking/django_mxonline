@@ -503,6 +503,10 @@ caption {
     width: 32%;
 }
 
+.userdetail:hover{
+    display: :block;
+}
+
 .header .top .user {
     height: 30px;
     line-height: 30px;

@@ -1,6 +1,7 @@
 #-*-coding:utf-8-*-
 import xadmin
 from xadmin import views
+from xadmin.plugins.auth import UserAdmin
 
 from .models import EmailVerfyRecord, Banner
 
@@ -22,6 +23,7 @@ class EmailVerfyRecordAdmin(object):
     #自定义的搜索字段
     search_fields = ['code', 'email', 'send_type']
     list_filter = ['code', 'email', 'send_type', 'send_time']
+    model_icon = 'fa fa-envelope-o'
 
 class BannerAdmin(object):
     list_display = ['title', 'image', 'url', 'index', 'add_time']
